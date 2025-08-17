@@ -116,7 +116,11 @@ class CoreGeneratePlugin : Plugin<Project> {
                                 "--api-file", file.absolutePath,
                                 "--targets", "http_models",
                                 "--targets", "client",
-                                "--http-client-opts", "resilience4j"
+                                //"--http-client-target", "ktor",
+                                "--http-client-opts", "resilience4j",
+                                //"--serialization-library", "kotlinx_serialization",
+                                "--src-path", "src/commonMain/kotlin",
+                                "--type-overrides", "datetime_as_instant",
                             )
                         }
                     }
