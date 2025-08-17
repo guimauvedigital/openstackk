@@ -14,13 +14,14 @@ class CoreGeneratePlugin : Plugin<Project> {
 
         project.afterEvaluate {
             val service = extension.service.orNull ?: error("You must configure openstackkGenerator.service")
+            val serviceNoDash = service.replace("-", "")
 
             val workDir = project.layout.buildDirectory.dir("openapi/$service")
             val outputDir = project.layout.buildDirectory.dir("generated/fabrikt/$service")
 
             // Task: run openstack-codegenerator
             val generateSpec = project.tasks.register(
-                "generate${service.capitalize()}Spec"
+                "generate${serviceNoDash.capitalize()}Spec"
             ) {
                 group = "openstack"
                 description = "Generate OpenAPI spec for $service"
@@ -89,7 +90,7 @@ class CoreGeneratePlugin : Plugin<Project> {
 
             // Task: run Fabrikt
             val fabriktTask = project.tasks.register(
-                "generate${service.capitalize()}Client"
+                "generate${serviceNoDash.capitalize()}Client"
             ) {
                 group = "openstack"
                 description = "Generate Kotlin client for $service"
@@ -111,7 +112,7 @@ class CoreGeneratePlugin : Plugin<Project> {
                             mainClass.set("com.cjbooms.fabrikt.cli.CodeGen")
                             args(
                                 "--output-directory", generationDir,
-                                "--base-package", "digital.guimauve.openstackk.$service.$version",
+                                "--base-package", "digital.guimauve.openstackk.$serviceNoDash.$version",
                                 "--api-file", file.absolutePath,
                                 "--targets", "http_models",
                                 "--targets", "client",
@@ -146,9 +147,18 @@ class CoreGeneratePlugin : Plugin<Project> {
 
     private val String.repositoryName: String
         get() = when (this) {
+            "baremetal" -> "ironic"
             "compute" -> "nova"
+            "container-infrastructure" -> "magnum"
+            "dns" -> "designate"
+            "identity" -> "keystone"
             "image" -> "glance"
+            "key-manager" -> "barbican"
             "network" -> "neutron"
+            "load-balancer" -> "octavia"
+            "placement" -> "placement"
+            "shared-file-system" -> "manila"
+            "volume" -> "cinder"
             else -> error("Unknown service: $this")
         }
 

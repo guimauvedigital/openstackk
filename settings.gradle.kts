@@ -44,7 +44,16 @@ dependencyResolutionManagement {
 
 rootProject.name = "openstackk"
 includeBuild("core-generate")
+include(":core:core-baremetal")
 include(":core:core-compute")
+include(":core:core-container-infrastructure")
+include(":core:core-dns")
+include(":core:core-identity")
 include(":core:core-image")
+include(":core:core-key-manager")
 include(":core:core-network")
+include(":core:core-load-balancer")
+include(":core:core-placement")
+include(":core:core-shared-file-system")
+include(":core:core-volume")
 include(":client")
